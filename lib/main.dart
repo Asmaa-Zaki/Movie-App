@@ -9,7 +9,6 @@ import 'ViewModels/Block/BlocObserver.dart';
 import 'ViewModels/Constants/constants.dart';
 import 'ViewModels/Local/CacheHelper.dart';
 import 'ViewModels/Network/DioHelper.dart';
-import 'Views/SignUp Screen/signup_screen.dart';
 
 
 void main() {
@@ -20,29 +19,32 @@ void main() {
       DioHelper.init();
       await CacheHelper.init();
       token = CacheHelper.getData(key: "token");
-      runApp(const MyApp());
+      Widget screen;
+      if(token != null)
+      {
+        screen= const MovieLayout();
+      }
+      else
+      {
+        screen= const LoginScreen();
+      }
+      runApp(MyApp(screen));
     },
     blocObserver: MyBlocObserver(),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Widget widget;
+  const MyApp(this.widget, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Widget screen;
-    if(token != null)
-    {
-      screen= const MovieLayout();
-    }
-    else
-    {
-      screen= const LoginScreen();
-    }
-
     return BlocProvider<MovieCubit>(
-      create: (BuildContext context) => MovieCubit(),
+      create: (BuildContext context) => MovieCubit()
+        ..getTrending()
+        ..getFavorites()
+        ..getRates(),
       child: BlocConsumer<MovieCubit, MovieStates>(
         builder: (BuildContext context, state) {
           return MaterialApp(
@@ -72,7 +74,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             themeMode: ThemeMode.dark,
-            home: screen,
+            home: widget,
           );
         },
         listener: (BuildContext context, Object? state) {},

@@ -34,6 +34,7 @@ class MovieResult
   dynamic voteAverage;
   int? voteCount;
   bool inFav= false;
+  double rate= 0;
 
   MovieResult.fromJson(Map<String, dynamic> data)
   {

@@ -10,12 +10,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var trendingList = MovieCubit.get(context).trendingData;
-    var playingList = MovieCubit.get(context).nowPlayingData;
-    var upcomingList = MovieCubit.get(context).upComingData;
+    MovieCubit.get(context).getAllMovie();
 
     return BlocConsumer<MovieCubit, MovieStates>(
       builder: (BuildContext context, state) {
+        var trendingList = MovieCubit.get(context).trendingData;
+        var playingList = MovieCubit.get(context).nowPlayingData;
+        var upcomingList = MovieCubit.get(context).upComingData;
+
         return ConditionalBuilder(
           fallback: (BuildContext context) {
             return const Center(child: CircularProgressIndicator());

@@ -36,3 +36,7 @@ class SignUpError extends MovieStates{}
 class SignInLoading extends MovieStates{}
 class SignInSuccess extends MovieStates{}
 class SignInError extends MovieStates{}
+
+class RateMovieLoading extends MovieStates{}
+class RateMovieSuccess extends MovieStates{}
+class RateMovieError extends MovieStates{}
