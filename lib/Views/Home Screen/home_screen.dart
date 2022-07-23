@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
+import '../../ViewModels/Constants/constants.dart';
 import '../Film Screen/film_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -102,7 +103,7 @@ class HomeScreen extends StatelessWidget {
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage("https://image.tmdb.org/t/p/w500" +
+                        image: NetworkImage(url +
                             itemList[index].poster)),
                   ),
                 ),

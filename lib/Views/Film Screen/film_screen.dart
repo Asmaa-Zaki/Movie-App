@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
 import '../../Models/movie_model.dart';
+import '../../ViewModels/Constants/constants.dart';
 
 class FilmScreen extends StatelessWidget {
   final MovieResult movie;
@@ -34,7 +35,7 @@ class FilmScreen extends StatelessWidget {
                                   alignment: AlignmentDirectional.bottomCenter,
                                   children: [
                                     Image.network(
-                                      "https://image.tmdb.org/t/p/w500" +
+                                      url +
                                           movie.poster!,
                                       fit: BoxFit.cover,
                                       width: MediaQuery.of(context).size.width,
@@ -81,7 +82,6 @@ class FilmScreen extends StatelessWidget {
                                             onRatingUpdate: (rating) {
                                               MovieCubit.get(context)
                                                   .rateMovie(rating, movie.id!);
-                                              print(rating);
                                             },
                                           ),
                                         ],
@@ -178,7 +178,7 @@ class FilmScreen extends StatelessWidget {
                                                                   15)),
                                                       image: DecorationImage(
                                                           image: NetworkImage(
-                                                              "https://image.tmdb.org/t/p/w500" +
+                                                              url +
                                                                   MovieCubit.get(
                                                                           context)
                                                                       .cast[index]

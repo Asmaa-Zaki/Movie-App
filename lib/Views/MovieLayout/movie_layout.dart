@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
 import 'package:gdsc_project/ViewModels/Constants/constants.dart';
+import 'package:gdsc_project/Views/Favourite%20Screen/favourite_screen.dart';
 import 'package:gdsc_project/Views/Home%20Screen/home_screen.dart';
 
 class MovieLayout extends StatefulWidget {
@@ -30,7 +31,7 @@ class _MovieLayoutState extends State<MovieLayout> {
     ];
     List<Widget> screens = [
       HomeScreen(),
-      HomeScreen(),
+      FavouriteScreen(),
       HomeScreen(),
     ];
 

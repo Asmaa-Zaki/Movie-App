@@ -115,12 +115,13 @@ class MovieCubit extends Cubit<MovieStates> {
             url: "movie/$id/rating",
             queries: {"api_key": apiKey},
             data: formData)
-        .then((value) {
+        .then((val) {
           rates[id]= value;
           getRates();
       emit(RateMovieSuccess());
     }).catchError((err) {
       emit(RateMovieError());
+      print(err);
     });
   }
 
@@ -137,6 +138,8 @@ class MovieCubit extends Cubit<MovieStates> {
         value.docs.forEach((element) {
           ratesList.add(RateModel.fromJson(element.data()));
         });
+        print('rate');
+        print(ratesList.length);
     });
   }
 
@@ -149,7 +152,6 @@ class MovieCubit extends Cubit<MovieStates> {
       favourites.forEach((fElement) {
         if (element.id == fElement.movieId) {
           element.inFav = true;
-          print('one');
           favouritesMovies[element.id!]= element.inFav;
         }
       });
@@ -165,7 +167,6 @@ class MovieCubit extends Cubit<MovieStates> {
       favourites.forEach((fElement) {
         if (element.id == fElement.movieId) {
           element.inFav = true;
-          print('one');
           favouritesMovies[element.id!]= element.inFav;
         }
       });
@@ -181,7 +182,6 @@ class MovieCubit extends Cubit<MovieStates> {
       favourites.forEach((fElement) {
         if (element.id == fElement.movieId) {
           element.inFav = true;
-          print('one');
           favouritesMovies[element.id!]= element.inFav;
         }
       });
@@ -204,10 +204,60 @@ class MovieCubit extends Cubit<MovieStates> {
             favourites.add(FavouriteMovies.fromJson(element.data()));
           }
         });
+        getFavouriteMovies();
         emit(GetFavSuccessScreen());
       }
     }).catchError((err) {
       emit(GetFavFailScreen());
+    });
+  }
+
+  List<MovieResult> favMovies= [];
+ // List<MovieResult> uniqueFavMovies= [];
+  getFavouriteMovies()
+  {
+    favMovies= [];
+    trendingData?.results.forEach((element) {
+      favourites.forEach((fElement) {
+        if(element.id == fElement.movieId)
+          {
+            favMovies.add(element);
+          }
+      });
+    });
+
+    upComingData?.results.forEach((element) {
+      favourites.forEach((fElement) {
+        if(element.id == fElement.movieId)
+        {
+          favMovies.add(element);
+        }
+      });
+    });
+
+    nowPlayingData?.results.forEach((element) {
+      favourites.forEach((fElement) {
+        if(element.id == fElement.movieId)
+        {
+          favMovies.add(element);
+        }
+      });
+    });
+
+    Map<int,MovieResult> uniqueFavMovies= {};
+    favMovies.forEach((element) {
+      uniqueFavMovies.addAll({element.id!: element});
+    });
+    favMovies=[];
+    uniqueFavMovies.forEach((key, value) {
+      favMovies.add(value);
+    });
+  }
+
+  filterFav()
+  {
+    favMovies.forEach((element) {
+      print(element.id);
     });
   }
 
@@ -249,8 +299,8 @@ class MovieCubit extends Cubit<MovieStates> {
     if (itemInFavourite == false) {
       addFavourites(id).then((value) {
         itemInFavourite == true;
-        emit(ChangeFavSuccessScreen());
         getFavorites();
+        emit(ChangeFavSuccessScreen());
       }).catchError((err) {
         emit(ChangeFavFailScreen());
         favouritesMovies[id] = !favouritesMovies[id]!;
@@ -258,8 +308,8 @@ class MovieCubit extends Cubit<MovieStates> {
     } else {
       removeFavourites(id).then((value) {
         itemInFavourite = false;
-        emit(ChangeFavSuccessScreen());
         getFavorites();
+        emit(ChangeFavSuccessScreen());
       }).catchError((err) {
         emit(ChangeFavFailScreen());
         favouritesMovies[id] = !favouritesMovies[id]!;

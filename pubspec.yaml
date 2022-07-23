@@ -39,6 +39,7 @@ dependencies:
   dio: ^4.0.6
   conditional_builder_null_safety: ^0.0.6
   flutter_rating_bar: ^4.0.1
+  timer_button: ^2.0.0
 
 
 
