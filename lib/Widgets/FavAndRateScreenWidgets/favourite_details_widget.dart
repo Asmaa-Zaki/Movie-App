@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class FavouriteFilmDetails extends StatelessWidget {
+class FavAndRateFilmDetails extends StatelessWidget {
   final String title;
   final String date;
   final dynamic rate;
-  const FavouriteFilmDetails(this.title, this.date, this.rate, {Key? key})
+  const FavAndRateFilmDetails(this.title, this.date, this.rate, {Key? key})
       : super(key: key);
 
   @override

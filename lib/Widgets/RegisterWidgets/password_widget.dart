@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../input_field.dart';
-import '../text_field.dart';
+import '../SharedWidgtes/input_field.dart';
+import '../SharedWidgtes/text_field.dart';
 
 class PasswordWidget extends StatefulWidget {
   final TextEditingController passwordController;

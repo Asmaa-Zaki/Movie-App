@@ -44,7 +44,8 @@ class MyApp extends StatelessWidget {
       create: (BuildContext context) => MovieCubit()
         ..getTrending()
         ..getFavorites()
-        ..getRates(),
+        ..getRates()
+      ,
       child: BlocConsumer<MovieCubit, MovieStates>(
         builder: (BuildContext context, state) {
           return MaterialApp(

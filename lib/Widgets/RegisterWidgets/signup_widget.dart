@@ -7,7 +7,7 @@ import 'package:gdsc_project/Views/Home%20Screen/home_screen.dart';
 import '../../ViewModels/Constants/constants.dart';
 import '../../ViewModels/Local/CacheHelper.dart';
 import '../../Views/Login Screen/login_screen.dart';
-import '../navigation.dart';
+import '../SharedWidgtes/navigation.dart';
 
 class SignUpWidget extends StatelessWidget {
   final TextEditingController nameController;

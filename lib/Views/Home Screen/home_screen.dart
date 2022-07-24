@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
-import '../../ViewModels/Constants/constants.dart';
-import '../Film Screen/film_screen.dart';
+import '../../Widgets/HomeScreenWidgets/create_movie_heading.dart';
+import '../../Widgets/HomeScreenWidgets/create_movie_list.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,9 +21,13 @@ class HomeScreen extends StatelessWidget {
 
         return ConditionalBuilder(
           fallback: (BuildContext context) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Colors.amber,
+            ));
           },
-          condition: MovieCubit.get(context).loaded|| state is GetUpComingSuccess,
+          condition:
+              MovieCubit.get(context).loaded || state is GetUpComingSuccess,
           builder: (BuildContext context) {
             return Scaffold(
                 body: SafeArea(
@@ -33,28 +37,28 @@ class HomeScreen extends StatelessWidget {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              createMovieHeading(context, "Trending", "Movies"),
+                              CreateMovieHeading(context, "Trending", "Movies"),
                               const SizedBox(
                                 height: 15,
                               ),
-                              createMovieList(trendingList?.results),
+                              CreateMovieList(itemList: trendingList!.results),
                               const SizedBox(
                                 height: 20,
                               ),
-                              createMovieHeading(
+                              CreateMovieHeading(
                                   context, "Now Playing", "Movies"),
                               const SizedBox(
                                 height: 10,
                               ),
-                              createMovieList(playingList?.results),
+                              CreateMovieList(itemList: playingList!.results),
                               const SizedBox(
                                 height: 20,
                               ),
-                              createMovieHeading(context, "Upcoming", "Movies"),
+                              CreateMovieHeading(context, "Upcoming", "Movies"),
                               const SizedBox(
                                 height: 10,
                               ),
-                              createMovieList(upcomingList?.results),
+                              CreateMovieList(itemList: upcomingList!.results),
                             ],
                           ),
                         ))));
@@ -64,93 +68,4 @@ class HomeScreen extends StatelessWidget {
       listener: (BuildContext context, Object? state) {},
     );
   }
-
-  Row createMovieHeading(BuildContext context, String title, String type) {
-    return Row(
-      children: [
-        createText(title, context, true),
-        const SizedBox(
-          width: 15,
-        ),
-        createText(type, context, false),
-        const Spacer(),
-        SizedBox(child: createArrowIcon())
-      ],
-    );
-  }
-
-  SizedBox createMovieList(var itemList) {
-    return SizedBox(
-      height: 200,
-      child: ListView.separated(
-        itemCount: itemList.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => FilmScreen(itemList[index])));
-              MovieCubit.get(context).getCast(itemList[index].id);
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 95,
-                  height: 155,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(url +
-                            itemList[index].poster)),
-                  ),
-                ),
-                const SizedBox(
-                  height: 3,
-                ),
-                SizedBox(
-                  height: 30,
-                  width: 95,
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: createText(
-                              itemList[index].title, context, false)),
-                      createIcon()
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const SizedBox(
-            width: 15,
-          );
-        },
-      ),
-    );
-  }
-
-  Icon createArrowIcon() => const Icon(
-        Icons.arrow_forward,
-        color: Colors.white,
-      );
-
-  Icon createIcon() => const Icon(
-        Icons.more_vert,
-        color: Colors.white,
-      );
-
-  Text createText(String text, BuildContext context, bool black) => Text(
-        text,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-        style: black == true
-            ? Theme.of(context).textTheme.bodyText1
-            : Theme.of(context).textTheme.bodyText2,
-      );
 }

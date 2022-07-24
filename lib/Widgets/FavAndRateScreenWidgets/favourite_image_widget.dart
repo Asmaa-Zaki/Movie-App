@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../ViewModels/Constants/constants.dart';
 
-class FavouriteFilmImage extends StatelessWidget {
-  const FavouriteFilmImage(this.imageUrl, {Key? key}) : super(key: key);
+class FavAndRateFilmImage extends StatelessWidget {
+  const FavAndRateFilmImage(this.imageUrl, {Key? key}) : super(key: key);
   final String imageUrl;
 
   @override

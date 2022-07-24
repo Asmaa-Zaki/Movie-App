@@ -4,30 +4,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
 import '../../Widgets/FavAndRateScreenWidgets/favourite_details_widget.dart';
-import '../../Widgets/FavAndRateScreenWidgets/favourite_icon_widget.dart';
 import '../../Widgets/FavAndRateScreenWidgets/favourite_image_widget.dart';
 
-
-class FavouriteScreen extends StatelessWidget {
-  const FavouriteScreen({Key? key}) : super(key: key);
+class RatesScreen extends StatelessWidget {
+  const RatesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    MovieCubit.get(context).getFavouriteMovies();
+    MovieCubit.get(context).getRateMovies();
     return BlocConsumer<MovieCubit, MovieStates>(
       builder: (context, state) {
-        var favList = MovieCubit.get(context).favMovies;
+        var rateMovies = MovieCubit.get(context).rateMovies;
         return Scaffold(
             body: SafeArea(
-          child: ConditionalBuilder(
-            fallback: (BuildContext context) {
-              return const Center(child: Text("Your Favourites Page is Empty"));
-            },
-            condition: favList.isNotEmpty,
-            builder: (BuildContext context) {
-              return ListView.separated(
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) => Card(
+              child: ConditionalBuilder(
+                fallback: (BuildContext context) {
+                  return const Center(child: Text("Your Rates Page is Empty"));
+                },
+                condition: rateMovies.isNotEmpty,
+                builder: (BuildContext context) {
+                  return ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) => Card(
                         color: Colors.grey.withOpacity(.1),
                         child: Container(
                             padding: const EdgeInsets.all(6.0),
@@ -37,29 +35,28 @@ class FavouriteScreen extends StatelessWidget {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                FavAndRateFilmImage(favList[index].poster!),
+                                FavAndRateFilmImage(rateMovies[index].poster!),
                                 const SizedBox(
                                   width: 10,
                                 ),
                                 FavAndRateFilmDetails(
-                                    favList[index].title!,
+                                    rateMovies[index].title!,
                                     MovieCubit.get(context)
-                                        .favMovies[index]
+                                        .rateMovies[index]
                                         .releaseDate!,
                                     MovieCubit.get(context)
-                                        .favMovies[index]
-                                        .voteAverage!),
-                                FavouriteFilmIcon(favList[index])
+                                        .rateMovies[index]
+                                        .rate),
                               ],
                             )),
                       ),
-                  separatorBuilder: (context, index) => Container(
+                      separatorBuilder: (context, index) => Container(
                         height: 2,
                       ),
-                  itemCount: favList.length);
-            },
-          ),
-        ));
+                      itemCount: rateMovies.length);
+                },
+              ),
+            ));
       },
       listener: (context, state) {},
     );

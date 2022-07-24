@@ -7,7 +7,7 @@ import 'package:gdsc_project/ViewModels/Constants/constants.dart';
 import 'package:gdsc_project/Views/Home%20Screen/home_screen.dart';
 import '../../ViewModels/Local/CacheHelper.dart';
 import '../../Views/SignUp Screen/signup_screen.dart';
-import '../navigation.dart';
+import '../SharedWidgtes/navigation.dart';
 
 class SignWidget extends StatelessWidget {
   final GlobalKey<FormState> formState;

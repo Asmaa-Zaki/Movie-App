@@ -12,16 +12,15 @@ class FavouriteFilmIcon extends StatelessWidget {
       alignment: AlignmentDirectional.bottomEnd,
       child: IconButton(
         icon: Icon(
-          MovieCubit.get(context).favouritesMovies[
-          movie.id!]!
+          MovieCubit.get(context).favouritesMovies[movie.id!]!
               ? Icons.favorite
               : Icons.favorite_border,
           color: Colors.red,
           size: 19,
-        ), onPressed: () {
-        MovieCubit.get(context)
-            .changeFav(movie.id!);
-      },
+        ),
+        onPressed: () {
+          MovieCubit.get(context).changeFav(movie.id!);
+        },
       ),
     );
   }
