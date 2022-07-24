@@ -2,6 +2,8 @@ abstract class MovieStates{}
 
 class MovieInitState extends MovieStates{}
 
+class IndexChange extends MovieStates{}
+
 class LoginStateSuccess extends MovieStates{}
 class LoginStateFail extends MovieStates{}
 
@@ -40,3 +42,9 @@ class SignInError extends MovieStates{}
 class RateMovieLoading extends MovieStates{}
 class RateMovieSuccess extends MovieStates{}
 class RateMovieError extends MovieStates{}
+
+class UserLogout extends MovieStates{}
+
+class GetUserLoading extends MovieStates{}
+class GetUserSuccess extends MovieStates{}
+class GetUserError extends MovieStates{}

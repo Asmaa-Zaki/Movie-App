@@ -8,6 +8,7 @@ import 'package:gdsc_project/Models/cast_model.dart';
 import 'package:gdsc_project/Models/favourite_model.dart';
 import 'package:gdsc_project/Models/rate_model.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
+import 'package:gdsc_project/ViewModels/Local/CacheHelper.dart';
 import 'package:gdsc_project/ViewModels/Network/DioHelper.dart';
 import '../../Models/UserModel/UserModel.dart';
 import '../../Models/movie_model.dart';
@@ -19,6 +20,14 @@ class MovieCubit extends Cubit<MovieStates> {
 
   static MovieCubit get(BuildContext context) {
     return BlocProvider.of(context);
+  }
+
+  //ButtonNavigation
+  int currentIndex= 0;
+  changeCurrentIndex(int index)
+  {
+    currentIndex= index;
+    emit(IndexChange());
   }
 
   //API
@@ -166,9 +175,13 @@ class MovieCubit extends Cubit<MovieStates> {
     ratesList= [];
     FirebaseFirestore.instance.collection("Rates")
         .get().then((value){
-      value.docs.forEach((element) {
-        ratesList.add(RateModel.fromJson(element.data()));
-      });
+      if (value.docs.isNotEmpty) {
+        value.docs.forEach((element) {
+          if (element.data()["userId"] == token) {
+            ratesList.add(RateModel.fromJson(element.data()));
+          }
+        });
+      }
     });
   }
 
@@ -391,6 +404,7 @@ class MovieCubit extends Cubit<MovieStates> {
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email!, password: password!)
         .then((value) {
+      token = value.user?.uid;
       createUser(
         email: email,
         password: password,
@@ -437,5 +451,27 @@ class MovieCubit extends Cubit<MovieStates> {
     }).catchError((err) {
       emit(SignInError());
     });
+  }
+
+  void getUserInfo()
+  {
+    emit(GetUserLoading());
+    FirebaseFirestore.instance.collection("Users")
+        .get().then((value){
+       value.docs.forEach((element) {
+         if(element.data()["userId"]== token)
+           {
+             user= UserModel.fromJson(element.data());
+           }
+       });
+       emit(GetUserSuccess());
+    });
+  }
+
+  void logOut()
+  {
+    user= null;
+    CacheHelper.removeKey(key: "token");
+    emit(UserLogout());
   }
 }

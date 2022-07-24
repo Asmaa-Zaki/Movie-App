@@ -4,22 +4,15 @@ import '../../Widgets/RegisterWidgets/heading_widget.dart';
 import '../../Widgets/RegisterWidgets/input_widget.dart';
 import '../../Widgets/RegisterWidgets/signin_widget.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var formState = GlobalKey<FormState>();
-  IconData suffixIcon = Icons.remove_red_eye;
-  late String message;
+class LoginScreen extends StatelessWidget{
+   LoginScreen({Key? key}) : super(key: key);
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final formState = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SafeArea(
         child: Form(

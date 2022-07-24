@@ -10,7 +10,6 @@ import 'ViewModels/Constants/constants.dart';
 import 'ViewModels/Local/CacheHelper.dart';
 import 'ViewModels/Network/DioHelper.dart';
 
-
 void main() {
   BlocOverrides.runZoned(
     () async {
@@ -19,39 +18,40 @@ void main() {
       DioHelper.init();
       await CacheHelper.init();
       token = CacheHelper.getData(key: "token");
-      Widget screen;
-      if(token != null)
-      {
-        screen= const MovieLayout();
-      }
-      else
-      {
-        screen= const LoginScreen();
-      }
-      runApp(MyApp(screen));
+      runApp(const MyApp());
     },
     blocObserver: MyBlocObserver(),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final Widget widget;
-  const MyApp(this.widget, {Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Widget screen;
+    if(token != null)
+    {
+      screen= const MovieLayout();
+    }
+    else
+    {
+      screen= LoginScreen();
+    }
+
     return BlocProvider<MovieCubit>(
       create: (BuildContext context) => MovieCubit()
         ..getTrending()
         ..getFavorites()
         ..getRates()
-      ,
+        ..getUserInfo(),
+
       child: BlocConsumer<MovieCubit, MovieStates>(
         builder: (BuildContext context, state) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             darkTheme: ThemeData(
-              primaryColor: const Color(0xff6b29d6),
+              primaryColor: Colors.amber,
               scaffoldBackgroundColor: Colors.black,
               inputDecorationTheme: const InputDecorationTheme(
                 iconColor: Colors.white,
@@ -61,10 +61,9 @@ class MyApp extends StatelessWidget {
                   )
                 ),
                 labelStyle: TextStyle(
-                  color: Color(0xff6b29d6)
+                  color: Colors.amber
                 )
               ),
-           //   focusColor: Color(0xff6b29d6),
               textTheme: const TextTheme(
                 bodyText1: TextStyle(
                     color: Colors.white,
@@ -75,7 +74,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             themeMode: ThemeMode.dark,
-            home: widget,
+            home: screen,
           );
         },
         listener: (BuildContext context, Object? state) {},

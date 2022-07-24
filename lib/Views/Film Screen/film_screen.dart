@@ -69,7 +69,7 @@ class FilmScreen extends StatelessWidget {
                                             itemSize: 25,
                                             unratedColor: Colors.grey,
                                             initialRating: MovieCubit.get(context)
-                                                    .rates[movie.id]!,
+                                                    .rates[movie.id]!/2,
                                             minRating: 1,
                                             direction: Axis.horizontal,
                                             allowHalfRating: true,

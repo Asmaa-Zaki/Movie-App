@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:gdsc_project/ViewModels/Constants/constants.dart';
 
 class CreateInput extends StatelessWidget {
   final String? label;
@@ -36,7 +35,7 @@ class CreateInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       cursorColor: Colors.white,
-      style: TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white),
       keyboardType: keyboard,
       controller: controller,
       validator: validate,
@@ -44,22 +43,20 @@ class CreateInput extends StatelessWidget {
       readOnly: readOnly,
       onEditingComplete: onEditingComplete,
       focusNode: myFocusNode,
-      // cursorColor: defaultColor,
       decoration: InputDecoration(
         fillColor: Colors.grey[900],
         filled: true,
         focusedBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: Color(0xff6b29d6))),
+            OutlineInputBorder(borderSide: BorderSide(color: defaultColor)),
         isDense: true,
-        // label: Text(label!),
         labelText: label,
-        focusColor: Color(0xff6b29d6),
+        focusColor: defaultColor,
         prefixIcon: Icon(prefix /*,color: defaultColor,*/),
         suffixIcon: GestureDetector(
           child: Icon(suffix /*,color: defaultColor,*/),
           onTap: changePassword,
         ),
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
       ),
       onTap: onTap,

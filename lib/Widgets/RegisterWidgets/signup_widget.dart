@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
 import 'package:gdsc_project/Views/Home%20Screen/home_screen.dart';
+import 'package:gdsc_project/Views/MovieLayout/movie_layout.dart';
 import '../../ViewModels/Constants/constants.dart';
 import '../../ViewModels/Local/CacheHelper.dart';
 import '../../Views/Login Screen/login_screen.dart';
@@ -41,11 +42,10 @@ class SignUpWidget extends StatelessWidget {
                     },
                     child: const Text(
                       "SignUp",
-                      style: TextStyle(color: Colors.white),
                     ),
                     color: Theme.of(context).primaryColor,
                   ),
-              fallback: (context) => const CircularProgressIndicator()),
+              fallback: (context) => CircularProgressIndicator(color: defaultColor,)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -55,7 +55,7 @@ class SignUpWidget extends StatelessWidget {
               ),
               TextButton(
                   onPressed: () {
-                    navigateAndReplace(context, const LoginScreen());
+                    navigateAndReplace(context,  LoginScreen());
                   },
                   child: Text(
                     "Log In",
@@ -69,7 +69,7 @@ class SignUpWidget extends StatelessWidget {
       listener: (context, state) {
         if (state is SignUpSuccess) {
           CacheHelper.setData(key: "token", value: token);
-          navigateAndReplace(context, HomeScreen());
+          navigateAndReplace(context, const MovieLayout());
         }
       },
     );
