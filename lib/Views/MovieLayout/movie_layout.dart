@@ -4,6 +4,7 @@ import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/Views/Favourite%20Screen/favourite_screen.dart';
 import 'package:gdsc_project/Views/Home%20Screen/home_screen.dart';
 import 'package:gdsc_project/Views/Rates%20Screen/rate_screen.dart';
+
 import '../../ViewModels/Block/states.dart';
 import '../Profile Screen/profile_screen.dart';
 
@@ -22,7 +23,6 @@ class MovieLayout extends StatelessWidget{
     return BlocConsumer<MovieCubit, MovieStates>(
       builder: (context, state){
         int currentIndex=  MovieCubit.get(context).currentIndex;
-        print(currentIndex);
         List<BottomNavigationBarItem> items = [
           BottomNavigationBarItem(
               icon: Icon( currentIndex== 0 ? Icons.home : Icons.home_outlined),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gdsc_project/Widgets/RegisterWidgets/password_widget.dart';
+
 import '../../Widgets/RegisterWidgets/heading_widget.dart';
 import '../../Widgets/RegisterWidgets/input_widget.dart';
 import '../../Widgets/RegisterWidgets/signin_widget.dart';

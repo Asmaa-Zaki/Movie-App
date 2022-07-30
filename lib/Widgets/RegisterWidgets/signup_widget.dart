@@ -1,10 +1,11 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
-import 'package:gdsc_project/Views/Home%20Screen/home_screen.dart';
 import 'package:gdsc_project/Views/MovieLayout/movie_layout.dart';
+
 import '../../ViewModels/Constants/constants.dart';
 import '../../ViewModels/Local/CacheHelper.dart';
 import '../../Views/Login Screen/login_screen.dart';
@@ -71,6 +72,11 @@ class SignUpWidget extends StatelessWidget {
           CacheHelper.setData(key: "token", value: token);
           navigateAndReplace(context, const MovieLayout());
         }
+        if (state is SignUpError)
+          {
+            Fluttertoast.showToast(
+                msg: "Invalid data try again");
+          }
       },
     );
   }

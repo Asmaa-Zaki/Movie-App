@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gdsc_project/Models/movie_model.dart';
+
+import '../../Models/MovieModel/movie_model.dart';
 import '../../ViewModels/Block/cubit.dart';
 import '../../ViewModels/Constants/constants.dart';
 import '../../Views/Film Screen/film_screen.dart';

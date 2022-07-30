@@ -5,6 +5,7 @@ import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
 import 'package:gdsc_project/Views/Login%20Screen/login_screen.dart';
 import 'package:gdsc_project/Views/MovieLayout/movie_layout.dart';
+
 import 'ViewModels/Block/BlocObserver.dart';
 import 'ViewModels/Constants/constants.dart';
 import 'ViewModels/Local/CacheHelper.dart';

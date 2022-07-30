@@ -1,17 +1,21 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gdsc_project/Models/cast_model.dart';
-import 'package:gdsc_project/Models/favourite_model.dart';
-import 'package:gdsc_project/Models/rate_model.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
 import 'package:gdsc_project/ViewModels/Local/CacheHelper.dart';
 import 'package:gdsc_project/ViewModels/Network/DioHelper.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../Models/CastModel/cast_model.dart';
+import '../../Models/FavouriteModel/favourite_model.dart';
+import '../../Models/MovieModel/movie_model.dart';
+import '../../Models/RateModel/rate_model.dart';
+import '../../Models/TeaserModel/TeaserModel.dart';
 import '../../Models/UserModel/UserModel.dart';
-import '../../Models/movie_model.dart';
 import '../Constants/constants.dart';
 
 class MovieCubit extends Cubit<MovieStates> {
@@ -22,18 +26,17 @@ class MovieCubit extends Cubit<MovieStates> {
     return BlocProvider.of(context);
   }
 
-  //ButtonNavigation
-  int currentIndex= 0;
-  changeCurrentIndex(int index)
-  {
-    currentIndex= index;
+  //BottomNavigation
+  int currentIndex = 0;
+  changeCurrentIndex(int index) {
+    currentIndex = index;
     emit(IndexChange());
   }
 
   //API
   MovieModel? trendingData;
   Map<int, double> rates = {};
-  List<RateModel> ratesList=[];
+  List<RateModel> ratesList = [];
 
   getTrending() {
     emit(GetTrendingLoading());
@@ -93,15 +96,17 @@ class MovieCubit extends Cubit<MovieStates> {
   bool castLoaded = false;
   getCast(int id) {
     cast = [];
+    castLoaded = false;
     emit(GetCastLoading());
     DioHelper.getData(url: "movie/$id/credits", queries: {"api_key": apiKey})
         .then((value) {
       value.data["cast"].forEach((element) {
         cast.add(CastModel.fromJson(element));
       });
-      Timer(const Duration(seconds: 2),(){
+      Timer(const Duration(seconds: 2), () {
         castLoaded = true;
         emit(GetCastSuccess());
+        getMovieTeaser(id);
       });
     }).catchError((err) {
       emit(GetCastError());
@@ -109,72 +114,91 @@ class MovieCubit extends Cubit<MovieStates> {
   }
 
   rateMovie(double value, int id) {
-    bool ratedBefore= false;
     var formData = FormData.fromMap({
       "request_token": requestToken,
       "session_id": sessionId,
       "value": value
     });
-    print(ratesList.length);
-    ratesList.forEach((element) {
-      if(element.movieId == id)
-        {
-         ratedBefore = true;
-        }
-      else
-        {
-          ratedBefore = false;
-        }
-    });
-    print(ratedBefore);
-    if(ratedBefore)
-      {
-        updateRateFirebase(value, id);
-        getRates();
-      }
-    else
-      {
-        addRateToFirebase(value, id);
-        getRates();
-      }
+    changeRate(value, id);
     emit(RateMovieLoading());
     DioHelper.postData(
-        url: "movie/$id/rating",
-        queries: {"api_key": apiKey},
-        data: formData)
+            url: "movie/$id/rating",
+            queries: {"api_key": apiKey},
+            data: formData)
         .then((val) {
-      rates[id]= value;
+      rates[id] = value * 2;
       emit(RateMovieSuccess());
     }).catchError((err) {
       emit(RateMovieError());
     });
   }
 
-  addRateToFirebase(double value, int id) {
-    String itemId= FirebaseFirestore.instance
-        .collection("Rates").doc().id;
-    FirebaseFirestore.instance
-        .collection("Rates").doc(itemId)
-        .set({"itemId": itemId, "movieId": id, "movieRate": value*2, "userId": token});
-  }
-
-  updateRateFirebase(double value, int id)
-  {
-    ratesList.forEach((element) {
-      if(element.movieId == id && element.userId == token)
-        {
-          FirebaseFirestore.instance
-              .collection("Rates").doc(element.itemId)
-              .set({"itemId": element.itemId, "movieId": id, "movieRate": value*2, "userId": token});
+  TeaserModel? movieTeaser;
+  String? movieTeaserKey;
+  getMovieTeaser(int id) {
+    DioHelper.getData(url: "movie/$id/videos", queries: {"api_key": apiKey})
+        .then((value) {
+      movieTeaser = TeaserModel.fromJson(value.data);
+      movieTeaserKey = movieTeaser?.results[0].key;
+      movieTeaser?.results.forEach((element) {
+        if (element.type == "Teaser") {
+          movieTeaserKey = element.key;
         }
+      });
     });
   }
 
-  getRates()
+  openTeaserOnYoutube()
   {
-    ratesList= [];
-    FirebaseFirestore.instance.collection("Rates")
-        .get().then((value){
+    launchUrl(Uri.parse("https://www.youtube.com/watch?v=$movieTeaserKey")).then((value) =>
+        print('saaaaaaaaad'));
+  }
+
+  //Firebase
+  //Rate-----
+  addRateToFirebase(double value, int id) {
+    String itemId = id.toString() + token!;
+    FirebaseFirestore.instance.collection("Rates").doc(itemId).set({
+      "itemId": itemId,
+      "movieId": id,
+      "movieRate": value * 2,
+      "userId": token
+    });
+  }
+
+  updateRateFirebase(double value, int id) {
+    ratesList.forEach((element) {
+      if (element.movieId == id && element.userId == token) {
+        FirebaseFirestore.instance.collection("Rates").doc(element.itemId).set({
+          "itemId": element.itemId,
+          "movieId": id,
+          "movieRate": value * 2,
+          "userId": token
+        });
+      }
+    });
+  }
+
+  void changeRate(double value, int id) {
+    bool ratedBefore = false;
+    ratesList.forEach((element) {
+      if (element.movieId == id) {
+        ratedBefore = true;
+      } else {
+        ratedBefore = false;
+      }
+    });
+    if (ratedBefore) {
+      updateRateFirebase(value, id);
+    } else {
+      addRateToFirebase(value, id);
+    }
+    getRates();
+  }
+
+  getRates() {
+    ratesList = [];
+    FirebaseFirestore.instance.collection("Rates").get().then((value) {
       if (value.docs.isNotEmpty) {
         value.docs.forEach((element) {
           if (element.data()["userId"] == token) {
@@ -185,23 +209,20 @@ class MovieCubit extends Cubit<MovieStates> {
     });
   }
 
-  List<MovieResult> rateMovies= [];
-  getRateMovies()
-  {
-    rateMovies= [];
+  List<MovieResult> rateMovies = [];
+  getRateMovies() {
+    rateMovies = [];
     trendingData?.results.forEach((element) {
-        ratesList.forEach((rElement) {
-          if(rElement.movieId == element.id)
-          {
-            rateMovies.add(element);
-          }
-        });
+      ratesList.forEach((rElement) {
+        if (rElement.movieId == element.id) {
+          rateMovies.add(element);
+        }
+      });
     });
 
     nowPlayingData?.results.forEach((element) {
       ratesList.forEach((rElement) {
-        if(rElement.movieId == element.id)
-        {
+        if (rElement.movieId == element.id) {
           rateMovies.add(element);
         }
       });
@@ -209,17 +230,16 @@ class MovieCubit extends Cubit<MovieStates> {
 
     upComingData?.results.forEach((element) {
       ratesList.forEach((rElement) {
-        if(rElement.movieId == element.id)
-        {
+        if (rElement.movieId == element.id) {
           rateMovies.add(element);
         }
       });
     });
-    Map<int,MovieResult> uniqueRateMovies= {};
+    Map<int, MovieResult> uniqueRateMovies = {};
     rateMovies.forEach((element) {
       uniqueRateMovies.addAll({element.id!: element});
     });
-    rateMovies=[];
+    rateMovies = [];
     uniqueRateMovies.forEach((key, value) {
       rateMovies.add(value);
     });
@@ -228,7 +248,6 @@ class MovieCubit extends Cubit<MovieStates> {
     });
   }
 
-//Firebase
 //Favourites
   List<FavouriteMovies> favourites = [];
   getAllMovie() {
@@ -236,13 +255,12 @@ class MovieCubit extends Cubit<MovieStates> {
       favourites.forEach((fElement) {
         if (element.id == fElement.movieId) {
           element.inFav = true;
-          favouritesMovies[element.id!]= element.inFav;
+          favouritesMovies[element.id!] = element.inFav;
         }
       });
       ratesList.forEach((rElement) {
-        if(rElement.movieId == element.id)
-        {
-          rates[element.id!] = element.rate= rElement.movieRate!;
+        if (rElement.movieId == element.id) {
+          rates[element.id!] = element.rate = rElement.movieRate!;
         }
       });
     });
@@ -251,13 +269,12 @@ class MovieCubit extends Cubit<MovieStates> {
       favourites.forEach((fElement) {
         if (element.id == fElement.movieId) {
           element.inFav = true;
-          favouritesMovies[element.id!]= element.inFav;
+          favouritesMovies[element.id!] = element.inFav;
         }
       });
       ratesList.forEach((rElement) {
-        if(rElement.movieId == element.id)
-        {
-          rates[element.id!] = element.rate= rElement.movieRate!;
+        if (rElement.movieId == element.id) {
+          rates[element.id!] = element.rate = rElement.movieRate!;
         }
       });
     });
@@ -266,13 +283,12 @@ class MovieCubit extends Cubit<MovieStates> {
       favourites.forEach((fElement) {
         if (element.id == fElement.movieId) {
           element.inFav = true;
-          favouritesMovies[element.id!]= element.inFav;
+          favouritesMovies[element.id!] = element.inFav;
         }
       });
       ratesList.forEach((rElement) {
-        if(rElement.movieId == element.id)
-        {
-          rates[element.id!] = element.rate= rElement.movieRate!;
+        if (rElement.movieId == element.id) {
+          rates[element.id!] = element.rate = rElement.movieRate!;
         }
       });
     });
@@ -295,14 +311,12 @@ class MovieCubit extends Cubit<MovieStates> {
     });
   }
 
-  List<MovieResult> favMovies= [];
-  getFavouriteMovies()
-  {
-    favMovies= [];
+  List<MovieResult> favMovies = [];
+  getFavouriteMovies() {
+    favMovies = [];
     trendingData?.results.forEach((element) {
       favourites.forEach((fElement) {
-        if(element.id == fElement.movieId)
-        {
+        if (element.id == fElement.movieId) {
           favMovies.add(element);
         }
       });
@@ -310,8 +324,7 @@ class MovieCubit extends Cubit<MovieStates> {
 
     upComingData?.results.forEach((element) {
       favourites.forEach((fElement) {
-        if(element.id == fElement.movieId)
-        {
+        if (element.id == fElement.movieId) {
           favMovies.add(element);
         }
       });
@@ -319,18 +332,17 @@ class MovieCubit extends Cubit<MovieStates> {
 
     nowPlayingData?.results.forEach((element) {
       favourites.forEach((fElement) {
-        if(element.id == fElement.movieId)
-        {
+        if (element.id == fElement.movieId) {
           favMovies.add(element);
         }
       });
     });
 
-    Map<int,MovieResult> uniqueFavMovies= {};
+    Map<int, MovieResult> uniqueFavMovies = {};
     favMovies.forEach((element) {
       uniqueFavMovies.addAll({element.id!: element});
     });
-    favMovies=[];
+    favMovies = [];
     uniqueFavMovies.forEach((key, value) {
       favMovies.add(value);
     });
@@ -453,24 +465,20 @@ class MovieCubit extends Cubit<MovieStates> {
     });
   }
 
-  void getUserInfo()
-  {
+  void getUserInfo() {
     emit(GetUserLoading());
-    FirebaseFirestore.instance.collection("Users")
-        .get().then((value){
-       value.docs.forEach((element) {
-         if(element.data()["userId"]== token)
-           {
-             user= UserModel.fromJson(element.data());
-           }
-       });
-       emit(GetUserSuccess());
+    FirebaseFirestore.instance.collection("Users").get().then((value) {
+      value.docs.forEach((element) {
+        if (element.data()["userId"] == token) {
+          user = UserModel.fromJson(element.data());
+        }
+      });
+      emit(GetUserSuccess());
     });
   }
 
-  void logOut()
-  {
-    user= null;
+  void logOut() {
+    user = null;
     CacheHelper.removeKey(key: "token");
     emit(UserLogout());
   }

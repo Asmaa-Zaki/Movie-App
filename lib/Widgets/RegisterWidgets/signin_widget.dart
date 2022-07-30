@@ -1,10 +1,12 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
 import 'package:gdsc_project/ViewModels/Constants/constants.dart';
 import 'package:gdsc_project/Views/MovieLayout/movie_layout.dart';
+
 import '../../ViewModels/Local/CacheHelper.dart';
 import '../../Views/SignUp Screen/signup_screen.dart';
 import '../SharedWidgtes/navigation.dart';
@@ -70,6 +72,11 @@ class SignWidget extends StatelessWidget {
           navigateAndReplace(context, const MovieLayout());
           CacheHelper.setData(key: "token", value: token);
         }
+        if(state is SignInError)
+          {
+            Fluttertoast.showToast(
+                msg: "Invalid data try again");
+          }
       },
     );
   }

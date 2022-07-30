@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
+
 import '../../Widgets/HomeScreenWidgets/create_movie_heading.dart';
 import '../../Widgets/HomeScreenWidgets/create_movie_list.dart';
 

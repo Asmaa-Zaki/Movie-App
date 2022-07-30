@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../ViewModels/Constants/constants.dart';
 
 class FavAndRateFilmImage extends StatelessWidget {

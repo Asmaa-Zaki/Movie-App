@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gdsc_project/ViewModels/Block/cubit.dart';
 import 'package:gdsc_project/ViewModels/Block/states.dart';
+
 import '../../Widgets/FavAndRateScreenWidgets/favourite_details_widget.dart';
 import '../../Widgets/FavAndRateScreenWidgets/favourite_image_widget.dart';
 
@@ -17,15 +18,15 @@ class RatesScreen extends StatelessWidget {
         var rateMovies = MovieCubit.get(context).rateMovies;
         return Scaffold(
             body: SafeArea(
-              child: ConditionalBuilder(
-                fallback: (BuildContext context) {
-                  return const Center(child: Text("Your Rates Page is Empty"));
-                },
-                condition: rateMovies.isNotEmpty,
-                builder: (BuildContext context) {
-                  return ListView.separated(
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) => Card(
+          child: ConditionalBuilder(
+            fallback: (BuildContext context) {
+              return const Center(child: Text("Your Rates Page is Empty"));
+            },
+            condition: rateMovies.isNotEmpty,
+            builder: (BuildContext context) {
+              return ListView.separated(
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (context, index) => Card(
                         color: Colors.grey.withOpacity(.1),
                         child: Container(
                             padding: const EdgeInsets.all(6.0),
@@ -50,13 +51,13 @@ class RatesScreen extends StatelessWidget {
                               ],
                             )),
                       ),
-                      separatorBuilder: (context, index) => Container(
+                  separatorBuilder: (context, index) => Container(
                         height: 2,
                       ),
-                      itemCount: rateMovies.length);
-                },
-              ),
-            ));
+                  itemCount: rateMovies.length);
+            },
+          ),
+        ));
       },
       listener: (context, state) {},
     );
