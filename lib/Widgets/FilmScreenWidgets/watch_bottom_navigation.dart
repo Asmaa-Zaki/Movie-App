@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../ViewModels/Block/cubit.dart';
+
 class WatchNowWidget extends StatelessWidget {
   const WatchNowWidget({Key? key}) : super(key: key);
 
@@ -9,7 +11,7 @@ class WatchNowWidget extends StatelessWidget {
       padding: const EdgeInsets.all(20.0),
       child: ElevatedButton(
         onPressed: () {
-          // MovieCubit.get(context).openTeaserOnYoutube();
+           MovieCubit.get(context).openTeaserOnYoutube();
         },
         child: const Text(
           "Watch Now",

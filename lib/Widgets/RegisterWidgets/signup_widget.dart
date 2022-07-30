@@ -71,6 +71,7 @@ class SignUpWidget extends StatelessWidget {
         if (state is SignUpSuccess) {
           CacheHelper.setData(key: "token", value: token);
           navigateAndReplace(context, const MovieLayout());
+          MovieCubit.get(context).changeCurrentIndex(0);
         }
         if (state is SignUpError)
           {

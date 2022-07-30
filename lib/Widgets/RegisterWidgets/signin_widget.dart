@@ -71,6 +71,7 @@ class SignWidget extends StatelessWidget {
         if (state is SignInSuccess) {
           navigateAndReplace(context, const MovieLayout());
           CacheHelper.setData(key: "token", value: token);
+          MovieCubit.get(context).changeCurrentIndex(0);
         }
         if(state is SignInError)
           {

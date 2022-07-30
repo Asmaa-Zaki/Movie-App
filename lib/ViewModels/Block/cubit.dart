@@ -215,6 +215,7 @@ class MovieCubit extends Cubit<MovieStates> {
     trendingData?.results.forEach((element) {
       ratesList.forEach((rElement) {
         if (rElement.movieId == element.id) {
+          element.rate= rElement.movieRate!;
           rateMovies.add(element);
         }
       });
@@ -223,6 +224,7 @@ class MovieCubit extends Cubit<MovieStates> {
     nowPlayingData?.results.forEach((element) {
       ratesList.forEach((rElement) {
         if (rElement.movieId == element.id) {
+          element.rate= rElement.movieRate!;
           rateMovies.add(element);
         }
       });
@@ -231,6 +233,7 @@ class MovieCubit extends Cubit<MovieStates> {
     upComingData?.results.forEach((element) {
       ratesList.forEach((rElement) {
         if (rElement.movieId == element.id) {
+          element.rate= rElement.movieRate!;
           rateMovies.add(element);
         }
       });
